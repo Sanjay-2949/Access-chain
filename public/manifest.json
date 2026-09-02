@@ -1,0 +1,16 @@
+{
+  "name": "AccessChain — Accessibility Intelligence Platform",
+  "short_name": "AccessChain",
+  "description": "End-to-End Accessible Journey Continuity Graph for Tourism & Mega-Events",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0284c7",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ]
+}
