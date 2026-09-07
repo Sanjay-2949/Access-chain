@@ -16,8 +16,6 @@ export interface TransitVehiclePosition {
   bearingDegrees: number;
   timestamp: string;
   occupancyStatus: 'EMPTY' | 'MANY_SEATS_AVAILABLE' | 'FEW_SEATS_AVAILABLE' | 'STANDING_ROOM_ONLY' | 'FULL';
-  agency?: 'MTC' | 'CMRL';
-  vehicleType?: 'BUS' | 'METRO';
   accessibility: {
     isWheelchairAccessible: boolean;
     hasKneelingSuspension: boolean;
@@ -25,8 +23,6 @@ export interface TransitVehiclePosition {
     availableWheelchairBays: number;
     totalWheelchairBays: number;
     audioAnnouncementsOnline: boolean;
-    levelBoardingGapMm?: number;
-    designatedCars?: string[];
   };
 }
 

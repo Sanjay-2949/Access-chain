@@ -66,10 +66,23 @@ export interface VolunteerRegistration {
   submittedAt: string;
 }
 
+export type ContributorTier = 'Newcomer' | 'Helper' | 'Champion' | 'Guardian';
+
+export interface CommunityContributor {
+  userId: string;
+  displayName: string;
+  points: number;
+  badge: ContributorTier;
+  verifiedReports: number;
+  totalVotes: number;
+  lastActive: string;
+}
+
 interface CommunityState {
   assistants: Assistant[];
   requests: AssistanceRequest[];
   volunteerRegistrations: VolunteerRegistration[];
+  contributors: CommunityContributor[];
   filters: {
     type: AssistantType[];
     gender: string;
@@ -85,6 +98,7 @@ interface CommunityState {
   submitRating: (requestId: string, rating: { overall: number; comment: string }) => void;
   registerVolunteer: (reg: Omit<VolunteerRegistration, 'id' | 'status' | 'submittedAt'>) => void;
   filteredAssistants: () => Assistant[];
+  awardPoints: (userId: string, displayName: string, points: number, type: 'vote' | 'report' | 'verification') => void;
 }
 
 const mockAssistants: Assistant[] = [
@@ -134,9 +148,53 @@ export const useCommunityStore = create<CommunityState>()(
       assistants: mockAssistants,
       requests: [],
       volunteerRegistrations: [],
+      contributors: [],
       filters: { type: [], gender: '', minRating: 0, experience: [], verified: false, availableNow: false },
 
       setFilters: (f) => set((s) => ({ filters: { ...s.filters, ...f } })),
+
+      awardPoints: (userId, displayName, points, type) => {
+        set((s) => {
+          const existingIdx = s.contributors.findIndex((c) => c.userId === userId);
+          const updated = [...s.contributors];
+          const now = new Date().toISOString();
+
+          const computeTier = (pts: number): ContributorTier => {
+            if (pts >= 300) return 'Guardian';
+            if (pts >= 150) return 'Champion';
+            if (pts >= 50) return 'Helper';
+            return 'Newcomer';
+          };
+
+          if (existingIdx >= 0) {
+            const current = updated[existingIdx];
+            const newPoints = current.points + points;
+            updated[existingIdx] = {
+              ...current,
+              displayName: displayName || current.displayName,
+              points: newPoints,
+              badge: computeTier(newPoints),
+              totalVotes: type === 'vote' ? current.totalVotes + 1 : current.totalVotes,
+              verifiedReports: type === 'report' || type === 'verification' ? current.verifiedReports + 1 : current.verifiedReports,
+              lastActive: now,
+            };
+          } else {
+            const newPoints = points;
+            updated.push({
+              userId,
+              displayName: displayName || 'Community Traveler',
+              points: newPoints,
+              badge: computeTier(newPoints),
+              totalVotes: type === 'vote' ? 1 : 0,
+              verifiedReports: type === 'report' || type === 'verification' ? 1 : 0,
+              lastActive: now,
+            });
+          }
+
+          updated.sort((a, b) => b.points - a.points);
+          return { contributors: updated };
+        });
+      },
 
       requestAssistance: (req) => {
         const id = Date.now().toString();
@@ -179,6 +237,6 @@ export const useCommunityStore = create<CommunityState>()(
         });
       },
     }),
-    { name: 'accesschain-community', partialize: (s) => ({ requests: s.requests, volunteerRegistrations: s.volunteerRegistrations }) }
+    { name: 'accesschain-community', partialize: (s) => ({ requests: s.requests, volunteerRegistrations: s.volunteerRegistrations, contributors: s.contributors }) }
   )
 );

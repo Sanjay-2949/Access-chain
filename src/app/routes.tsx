@@ -17,7 +17,6 @@ import Settings from '../ui-pages/Settings';
 import Help from '../ui-pages/Help';
 import OutageAlerts from '../ui-pages/OutageAlerts';
 import Demo from '../ui-pages/Demo';
-import TransitRadar from '../ui-pages/TransitRadar';
 
 export const router = createBrowserRouter([
   {
@@ -46,7 +45,6 @@ export const router = createBrowserRouter([
       { path: 'settings', element: <Settings /> },
       { path: 'help', element: <Help /> },
       { path: 'outages', element: <OutageAlerts /> },
-      { path: 'transit/radar', element: <TransitRadar /> },
       { path: 'demo', element: <Demo /> },
       { path: '*', element: <Navigate to="/home" replace /> },
     ],

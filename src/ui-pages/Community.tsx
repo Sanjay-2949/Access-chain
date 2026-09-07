@@ -2,11 +2,10 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useCommunityStore } from '../stores/useCommunityStore';
 import { useJourneyStore } from '../stores/useJourneyStore';
-import { useAppStore } from '../stores/useAppStore';
 import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
-import { Handshake, HeartHandshake, MapPin, CheckCircle, Coins, ShieldCheck, Sparkles, Award } from 'lucide-react';
+import { Handshake, HeartHandshake, MapPin, CheckCircle } from 'lucide-react';
 import { GooglePlacesAutocomplete } from '../components/map/GooglePlacesAutocomplete';
 
 function StarRating({ rating }: { rating: number }) {
@@ -67,7 +66,6 @@ export default function Community() {
   const [requestId, setRequestId] = useState<string | null>(null);
   const { filteredAssistants, filters, setFilters, requestAssistance } = useCommunityStore();
   const { savedJourneys } = useJourneyStore();
-  const { accessPoints, badges } = useAppStore();
   const assistants = filteredAssistants();
 
   const handleRequest = (assistantId: string) => {
@@ -222,33 +220,9 @@ export default function Community() {
   }
 
   return (
-    <div className="max-w-md mx-auto px-5 py-8 space-y-6">
-      {/* AccessPoints Rewards Wallet Card */}
-      <div className="p-4 rounded-2xl bg-gradient-to-br from-slate-900 to-slate-950 border border-amber-500/30 shadow-lg flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
-            <Coins className="w-6 h-6" />
-          </div>
-          <div>
-            <div className="text-xs text-slate-400 font-medium">Your Community Rewards</div>
-            <div className="text-lg font-bold font-mono text-amber-300">
-              {accessPoints} <span className="text-xs text-amber-400/80">PTS</span>
-            </div>
-          </div>
-        </div>
-        <div className="text-right">
-          <span className="text-xs font-bold text-emerald-400 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30">
-            {badges[badges.length - 1] || 'Community Scout'}
-          </span>
-          <div className="text-[10px] text-slate-500 mt-1">Tier Status</div>
-        </div>
-      </div>
-
-      <div>
-        <h1 className="font-display text-2xl font-bold text-[var(--foreground)] mb-1">Support the Community</h1>
-        <p className="text-sm text-[var(--muted-foreground)]">Connect with volunteers and assistants, or give back by helping others.</p>
-      </div>
-
+    <div className="max-w-md mx-auto px-5 py-10">
+      <h1 className="font-display text-2xl font-bold text-[var(--foreground)] mb-2">Support the Community</h1>
+      <p className="text-sm text-[var(--muted-foreground)] mb-8">Connect with volunteers and assistants, or give back by helping others.</p>
       <div className="flex flex-col gap-4">
         <Card hoverable onClick={() => setView('need')} className="p-6">
           <div className="text-3xl mb-3">🤲</div>
@@ -262,7 +236,7 @@ export default function Community() {
         </Card>
         <Card hoverable onClick={() => setView('contribute')} className="p-6">
           <div className="text-3xl mb-3">📍</div>
-          <h2 className="font-display font-bold text-[var(--foreground)] mb-1">Verify Infrastructure (+25 PTS)</h2>
+          <h2 className="font-display font-bold text-[var(--foreground)] mb-1">Verify Infrastructure</h2>
           <p className="text-sm text-[var(--muted-foreground)]">Report broken elevators, measure ramp inclines, and verify paths.</p>
         </Card>
       </div>
@@ -271,8 +245,6 @@ export default function Community() {
 }
 
 function ContributeInfrastructureForm({ onDone }: { onDone: () => void }) {
-  const { addOutage } = useJourneyStore();
-  const { awardPoints } = useAppStore();
   const [done, setDone] = useState(false);
   const [form, setForm] = useState({
     location: '',
@@ -286,24 +258,6 @@ function ContributeInfrastructureForm({ onDone }: { onDone: () => void }) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const isWorking = form.status === 'Working';
-    addOutage({
-      id: `outage-${Date.now()}`,
-      infrastructure: `${form.infraType} (${form.notes || (isWorking ? 'Verified functional' : 'Barrier reported')})`,
-      location: form.location || 'Chennai Station',
-      category: form.infraType.toUpperCase() as any,
-      status: isWorking ? 'Operational' : 'Outage',
-      reportedBy: 'You (Community Contributor)',
-      reportedAt: new Date().toISOString(),
-      verifiedAt: isWorking ? new Date().toISOString() : undefined,
-      confidence: 'Medium',
-      confidenceScore: isWorking ? 20 : 75,
-      upvotes: isWorking ? 0 : 1,
-      downvotes: isWorking ? 1 : 0,
-      verifiedByCrowd: true,
-      affectedSegments: [],
-    });
-    awardPoints(25, `Contributed accessibility audit for ${form.location}`);
     setDone(true);
     setTimeout(onDone, 2000);
   };
@@ -312,7 +266,7 @@ function ContributeInfrastructureForm({ onDone }: { onDone: () => void }) {
     <div className="text-center py-8">
       <div className="text-4xl mb-3">✅</div>
       <p className="font-semibold text-[var(--feasible)]">Data submitted successfully!</p>
-      <p className="text-sm text-[var(--muted-foreground)] mt-2">Earned +25 AccessPoints! Thank you for contributing to the accessibility map.</p>
+      <p className="text-sm text-[var(--muted-foreground)] mt-2">Thank you for contributing to the accessibility map.</p>
     </div>
   );
 

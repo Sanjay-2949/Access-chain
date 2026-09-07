@@ -31,8 +31,6 @@ import {
   Compass,
   MapPin,
   Flame,
-  Bus,
-  Train,
 } from 'lucide-react';
 
 export default function ActiveJourney() {
@@ -616,73 +614,6 @@ export default function ActiveJourney() {
             )}
           </div>
         </div>
-
-        {/* LIVE TRANSIT TELEMETRY (GTFS-RT) PANEL IF BUS OR METRO */}
-        {(currentSegment.type === 'bus' || currentSegment.type === 'metro') && (
-          <div className="bg-slate-950/90 border border-sky-500/30 rounded-2xl p-3.5 space-y-2.5">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="p-1.5 rounded-xl bg-sky-500/20 text-sky-400">
-                  {currentSegment.type === 'metro' ? <Train className="w-4 h-4" /> : <Bus className="w-4 h-4" />}
-                </span>
-                <div>
-                  <span className="text-xs font-bold text-white block">
-                    {currentSegment.type === 'metro'
-                      ? 'CMRL Metro (Level-Boarding 40mm Gap)'
-                      : 'MTC Electric Low-Floor Fleet'}
-                  </span>
-                  <div className="text-[10px] text-emerald-400 font-semibold flex items-center gap-1">
-                    <ShieldCheck className="w-3 h-3" />
-                    GTFS-Realtime Verified Accessible
-                  </div>
-                </div>
-              </div>
-
-              <Badge variant="feasible" size="sm">
-                ♿ 2 Bays Open
-              </Badge>
-            </div>
-
-            <div className="grid grid-cols-3 gap-2 text-[11px] bg-slate-900/90 p-2.5 rounded-xl border border-slate-800 text-slate-300">
-              <div>
-                <span className="text-slate-500 block text-[10px]">Approaching:</span>
-                <span className="font-bold text-sky-400 font-mono">
-                  {currentSegment.type === 'metro' ? 'Train #B-108' : 'TN-01-AN-4821'}
-                </span>
-              </div>
-              <div>
-                <span className="text-slate-500 block text-[10px]">ETA to Boarding:</span>
-                <span className="font-bold text-amber-300 font-mono">~3 mins</span>
-              </div>
-              <div>
-                <span className="text-slate-500 block text-[10px]">Boarding Assist:</span>
-                <span className="text-emerald-400 font-semibold">
-                  {currentSegment.type === 'metro' ? 'Car 1 & 4' : 'Kneeling Ramp'}
-                </span>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between pt-1">
-              <button
-                onClick={() => navigate('/transit/radar')}
-                className="text-xs text-sky-400 hover:text-sky-300 flex items-center gap-1 font-semibold"
-              >
-                Track live on Transit Radar →
-              </button>
-              <button
-                onClick={() => {
-                  if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-                    const text = `${currentSegment.operator || 'Transit vehicle'} approaching. 2 of 2 wheelchair bays available. Certified step-free low floor.`;
-                    window.speechSynthesis.speak(new SpeechSynthesisUtterance(text));
-                  }
-                }}
-                className="text-[11px] text-slate-400 hover:text-white flex items-center gap-1"
-              >
-                <Volume2 className="w-3 h-3 text-sky-400" /> Announce Arrival
-              </button>
-            </div>
-          </div>
-        )}
 
         {/* Action Controls */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">

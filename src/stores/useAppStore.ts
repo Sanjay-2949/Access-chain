@@ -37,7 +37,7 @@ export interface EmergencyContact {
 
 export interface Notification {
   id: string;
-  type: 'outage' | 'assistance' | 'journey' | 'review' | 'system' | 'community';
+  type: 'outage' | 'assistance' | 'journey' | 'review' | 'system';
   title: string;
   message: string;
   read: boolean;
@@ -56,8 +56,6 @@ interface AppState {
   highContrast: boolean;
   reducedMotion: boolean;
   notifPrefs: { outage: boolean; journey: boolean; community: boolean };
-  accessPoints: number;
-  badges: string[];
 
   login: (user: User) => void;
   logout: () => void;
@@ -66,7 +64,6 @@ interface AppState {
   removeEmergencyContact: (id: string) => void;
   markNotificationRead: (id: string) => void;
   addNotification: (n: Omit<Notification, 'id' | 'createdAt' | 'read'>) => void;
-  awardPoints: (amount: number, reason: string) => void;
   setLanguage: (lang: Language) => void;
   setTextSize: (size: TextSize) => void;
   setHighContrast: (val: boolean) => void;
@@ -89,24 +86,12 @@ export const useAppStore = create<AppState>()(
       isAuthenticated: false,
       accessibilityProfile: defaultProfile,
       emergencyContacts: [],
-      notifications: [
-        {
-          id: 'n1',
-          type: 'outage',
-          title: 'Outage alert on saved journey',
-          message: 'Gate 4 elevator at Chennai Central is currently out of service. Your saved journey may be affected.',
-          read: false,
-          createdAt: new Date(Date.now() - 3600000).toISOString(),
-          actionUrl: '/saved-journeys',
-        },
-      ],
+      notifications: [],
       language: 'en',
       textSize: 'normal',
       highContrast: false,
       reducedMotion: false,
       notifPrefs: { outage: true, journey: true, community: true },
-      accessPoints: 150,
-      badges: ['Community Scout'],
 
       login: (user) => set({ user, isAuthenticated: true }),
       logout: () => set({ user: null, isAuthenticated: false }),
@@ -127,33 +112,6 @@ export const useAppStore = create<AppState>()(
             ...s.notifications,
           ],
         })),
-      awardPoints: (amount, reason) =>
-        set((s) => {
-          const newTotal = (s.accessPoints || 0) + amount;
-          const newBadges = [...(s.badges || [])];
-
-          if (newTotal >= 200 && !newBadges.includes('Verified Pathfinder')) {
-            newBadges.push('Verified Pathfinder');
-          }
-          if (newTotal >= 300 && !newBadges.includes('Chennai Transit Guardian')) {
-            newBadges.push('Chennai Transit Guardian');
-          }
-
-          const notif: Notification = {
-            id: Date.now().toString(),
-            type: 'community',
-            title: `+${amount} AccessPoints Earned! 🪙`,
-            message: reason,
-            read: false,
-            createdAt: new Date().toISOString(),
-          };
-
-          return {
-            accessPoints: newTotal,
-            badges: newBadges,
-            notifications: [notif, ...s.notifications],
-          };
-        }),
       setLanguage: (language) => set({ language }),
       setTextSize: (textSize) => set({ textSize }),
       setHighContrast: (highContrast) => set({ highContrast }),
