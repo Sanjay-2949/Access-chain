@@ -265,6 +265,10 @@ export async function computeRoute(
           else if (isHearing) label = `${leg.instructions} (Synchronized Stop Arrival Display)`;
         }
 
+        const segCoords = leg.coordinates || [];
+        const startCoord = segCoords.length > 0 ? { lat: segCoords[0][0], lng: segCoords[0][1] } : undefined;
+        const endCoord = segCoords.length > 0 ? { lat: segCoords[segCoords.length - 1][0], lng: segCoords[segCoords.length - 1][1] } : undefined;
+
         return {
           id: `seg-live-${index + 1}`,
           type: segType,
@@ -281,6 +285,9 @@ export async function computeRoute(
           fare: leg.mode === 'BUS' ? 25 : leg.mode === 'TRAIN' ? 85 : leg.mode === 'METRO' ? 30 : 0,
           operator: primary.operator || (leg.mode === 'TRAIN' ? 'Southern Railway' : 'MTC Chennai'),
           warnings: [],
+          coordinates: segCoords,
+          startCoordinates: startCoord,
+          endCoordinates: endCoord,
         };
       });
 
@@ -332,6 +339,12 @@ export async function computeRoute(
         rampAvailable: true,
         wheelchairBoarding: true,
         warnings: [],
+        coordinates: [
+          [originDecision.destination.lat, originDecision.destination.lng],
+          [destDecision.destination.lat, destDecision.destination.lng],
+        ],
+        startCoordinates: { lat: originDecision.destination.lat, lng: originDecision.destination.lng },
+        endCoordinates: { lat: destDecision.destination.lat, lng: destDecision.destination.lng },
       },
     ];
   }

@@ -15,6 +15,7 @@ import {
  CheckCircle2,
  AlertOctagon,
  ArrowRight,
+ Navigation,
 } from 'lucide-react';
 
 const TYPE_ICONS: Record<string, string> = {
@@ -305,15 +306,27 @@ export default function JourneyRoadmap() {
  </div>
  </div>
 
- {/* Action Buttons */}
- <div className="flex items-center gap-3 pt-2">
- <Button variant="outline" onClick={() => navigate('/journey/transport')}>
- Modify Transport
- </Button>
- <Button fullWidth onClick={handleSave}>
- {saved ? 'Journey Saved to Profile' : 'Confirm & Save Journey'}
- </Button>
- </div>
+  {/* Action Buttons */}
+  <div className="flex flex-col gap-2 pt-2">
+    <Button
+      variant="primary"
+      size="lg"
+      fullWidth
+      onClick={() => navigate('/journey/active')}
+      className="bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold shadow-lg shadow-sky-950/40"
+    >
+      <Navigation className="w-4 h-4 mr-2" />
+      Start Live Navigation
+    </Button>
+    <div className="flex items-center gap-3">
+      <Button variant="outline" fullWidth onClick={() => navigate('/journey/transport')}>
+        Modify Transport
+      </Button>
+      <Button fullWidth onClick={handleSave}>
+        {saved ? 'Journey Saved' : 'Save Journey'}
+      </Button>
+    </div>
+  </div>
 
  {/* Outage Simulation for Hackathon Demo */}
  {process.env.NODE_ENV !== 'production' && (

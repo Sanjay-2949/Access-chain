@@ -478,13 +478,22 @@ export default function MapView() {
  )}
  </div>
 
- {/* Bottom Status Bar */}
- <div className="px-5 py-3 border-t border-slate-800 bg-slate-900 flex items-center justify-between z-10">
- <div className="flex items-center gap-2 text-xs text-slate-300">
- <span className="w-2 h-2 rounded-full bg-emerald-400" />
- <span>Real Road Route Connected with Live AIS-140 Bus Telemetry</span>
- </div>
- </div>
+  {/* Bottom Status Bar */}
+  <div className="px-5 py-3 border-t border-slate-800 bg-slate-900 flex items-center justify-between z-10 gap-3">
+    <div className="flex items-center gap-2 text-xs text-slate-300">
+      <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+      <span>Google Maps & Live Telemetry Active</span>
+    </div>
+    <Button
+      variant="primary"
+      size="sm"
+      onClick={() => navigate('/journey/active')}
+      className="bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold shrink-0"
+    >
+      <Navigation className="w-3.5 h-3.5 mr-1" />
+      Start Live Navigation
+    </Button>
+  </div>
 
  {/* Live Google Transit Departures Sheet Modal */}
  {selectedStopForDepartures && (
