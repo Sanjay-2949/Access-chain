@@ -1,0 +1,19 @@
+[
+    {
+        "special_features": [],
+        "result_type": "ROUTE",
+        "route_id": "KFmySWzX",
+        "agency_name": "MTC",
+        "routePassEnabled": false,
+        "route_name": "1",
+        "spf": ["Deluxe"],
+        "first_stop_name": "Thiruvottiyur Bus Stand",
+        "isFreeRide": false,
+        "match_ratio": 0,
+        "last_stop_name": "Thiruvanmiyur Depot",
+        "mTicketEnabled": false,
+        "transport_type": "bus",
+        "direction_stop_name": "Thiruvanmiyur Depot",
+        "station_type": "bus"
+    }
+]
